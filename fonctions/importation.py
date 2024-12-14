@@ -26,7 +26,7 @@ def etl(path_folder_files : str) -> pd.DataFrame:
     
     for fichier in glob.glob(f"{path_folder_files}\*.csv"):
         print(f"Importation du fichier {os.path.basename(fichier)}")
-        df_temp = pd.read_csv(fichier, encoding='utf-8', compression='zip', sep = ',')
+        df_temp = pd.read_csv(fichier, encoding='utf-8', sep = ',')
         
         full_data = pd.concat([full_data, df_temp]).reset_index(drop = True)
     
