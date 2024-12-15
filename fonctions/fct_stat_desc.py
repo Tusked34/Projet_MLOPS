@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -73,4 +74,40 @@ def plot_pie_charts(df):
         fig.delaxes(axes[j])
 
     plt.tight_layout()  # Ajuster l'espacement entre les graphiques
+    plt.show()
+
+def plot_density(df):
+    """
+    
+    """
+    # Liste des colonnes numériques
+    numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns
+    # Configuration de l'affichage
+    sns.set(style="whitegrid")
+    # Calcul du nombre de lignes et de colonnes pour le sous-graphique
+    num_cols = 3  # Par exemple, on fixe 3 colonnes
+    num_rows = math.ceil(len(numeric_columns) / num_cols)
+
+    plt.figure(figsize=(15, 5 * num_rows))
+
+    # Création de graphiques pour chaque colonne numérique avec courbe de densité
+    for i, column in enumerate(numeric_columns, 1):
+        plt.subplot(num_rows, num_cols, i)
+        sns.kdeplot(df[column], fill=True, color='blue')
+        plt.title(f'Density Plot of {column}')
+        plt.xlabel(column)
+        plt.ylabel('Density')
+
+    plt.tight_layout()
+    plt.show()
+
+    # Boîtes à moustaches pour les mêmes colonnes
+    plt.figure(figsize=(15, 5 * num_rows))
+    for i, column in enumerate(numeric_columns, 1):
+        plt.subplot(num_rows, num_cols, i)
+        sns.boxplot(x=df[column], color='orange')
+        plt.title(f'Boxplot of {column}')
+        plt.xlabel(column)
+
+    plt.tight_layout()
     plt.show()
