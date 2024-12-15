@@ -7,6 +7,7 @@ import os
 # Ajouter dynamiquement le chemin du dossier "fonctions" (revenir en arrière de deux niveaux)
 # Add the parent directory of 'fonctions' to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from fonctions.fct_importation import *
 from fonctions.fct_preprocess import *
