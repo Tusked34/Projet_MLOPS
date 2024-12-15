@@ -4,9 +4,8 @@ import numpy as np
 import sys
 import os
 
-# Ajoute le chemin du dossier parent à sys.path
-notebook_dir = os.path.abspath('..')  # Dossier parent de "notebook/"
-sys.path.append(notebook_dir)
+# Ajouter dynamiquement le chemin du dossier "fonctions" (revenir en arrière de deux niveaux)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../fonctions')))
 
 from fonctions.importation import *
 from fonctions.fct_preprocess import *
@@ -17,5 +16,7 @@ df = etl(r"..\data\data_raw")
 assign_borough(df)
 drop_useless_columns(df)
 low_modalities_grouping(df)
+print("\nData cleaning OK")
 
 df.to_csv('..\data\data_clean\data_preprocess.csv', index=False)
+print("\nClean data saved OK")
