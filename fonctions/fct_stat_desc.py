@@ -48,7 +48,7 @@ def plot_pie_charts(df):
     
     """
     # Sélectionner les colonnes non numériques
-    non_numeric_columns = df.select_dtypes(exclude=['float64', 'int64']).columns
+    non_numeric_columns = df.select_dtypes(exclude=['number']).columns
     
     # Définir le nombre de colonnes et de lignes en fonction du nombre de colonnes non numériques
     n = len(non_numeric_columns)
@@ -81,11 +81,11 @@ def plot_density(df):
     
     """
     # Liste des colonnes numériques
-    numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns
+    numeric_columns = df.select_dtypes(include=['number']).columns
     # Configuration de l'affichage
     sns.set(style="whitegrid")
     # Calcul du nombre de lignes et de colonnes pour le sous-graphique
-    num_cols = 3  # Par exemple, on fixe 3 colonnes
+    num_cols = 4  # Par exemple, on fixe 4 colonnes
     num_rows = math.ceil(len(numeric_columns) / num_cols)
 
     plt.figure(figsize=(15, 5 * num_rows))

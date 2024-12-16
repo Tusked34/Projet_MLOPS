@@ -3,6 +3,35 @@ import glob
 import os
 import os.path
 
+def import_packages():
+    # Importation des données + Pre processing
+    import pandas as pd
+    import glob
+    import os
+    import sys
+    import os.path
+    import warnings
+    warnings.filterwarnings("ignore")
+    
+    # Stat Desc
+    import math
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    # Entrainement + Evaluation du Modèle
+    import numpy as np
+    from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+    from sklearn.compose import ColumnTransformer
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import OneHotEncoder, StandardScaler
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.neural_network import MLPRegressor
+    from sklearn.linear_model import LinearRegression
+    from sklearn.metrics import make_scorer, mean_squared_error, r2_score
+
+
+
+
 def etl(path_folder_files : str) -> pd.DataFrame:
     """
     Effectue un processus ETL (Extract, Transform, Load) en important tous les fichiers CSV compressés
@@ -34,3 +63,7 @@ def etl(path_folder_files : str) -> pd.DataFrame:
     print("*"*50)
     print(f"Dimension du dataset : {full_data.shape[0]} lignes et {full_data.shape[1]} colonnes")
     return full_data
+
+
+
+
