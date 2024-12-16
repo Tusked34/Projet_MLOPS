@@ -102,7 +102,7 @@ def modelisation(features : pd.DataFrame, target : pd.Series, preprocessor):
     # Définir les modèles
     models = {
         "Random Forest": RandomForestRegressor(random_state=42),
-        "Neural Network": MLPRegressor(random_state=42, max_iter=500),
+        "Neural Network": MLPRegressor(random_state=42, max_iter=1000),
         "Linear Regression": LinearRegression()
     }
 

@@ -1,10 +1,14 @@
 import pandas as pd
+import os
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPRegressor
+from sklearn.exceptions import ConvergenceWarning
+import warnings
+warnings.filterwarnings("ignore", category=ConvergenceWarning)
 
-def optimisation_hyperparametres(features : pd.DataFrame, target : pd.Series, preprocessor):
+def optimisation_hyperparametres(features : pd.DataFrame, target : pd.Series, preprocessor, output_path_prediction : str):
     """
     Optimise les hyperparamètres de deux modèles : Random Forest et Réseau de Neurones,
     en utilisant une recherche sur grille avec validation croisée.
@@ -20,9 +24,9 @@ def optimisation_hyperparametres(features : pd.DataFrame, target : pd.Series, pr
                                           des données (standardisation, encodage, etc.).
 
     Returns:
-        tuple: Un tuple contenant :
-            - dict : Les meilleurs hyperparamètres pour Random Forest (`meilleurs_estimators_rf`).
-            - dict : Les meilleurs hyperparamètres pour le Réseau de Neurones (`meilleurs_estimators_mlp`).
+        Rien.
+        Ecrit un csv vers data\data_predict avec les valeurs réelles, prédites par le random forest
+        et les valeurs prédites par le réseau de neurones.
 
     Prints:
         - Les étapes de l'optimisation.
@@ -60,7 +64,7 @@ def optimisation_hyperparametres(features : pd.DataFrame, target : pd.Series, pr
 
     mlp_pipeline = Pipeline(steps=[
         ('preprocessor', preprocessor),
-        ('model', MLPRegressor(random_state=42, max_iter=500))
+        ('model', MLPRegressor(random_state=42, max_iter=1000))
     ])
 
     mlp_grid = GridSearchCV(mlp_pipeline, mlp_params, cv = 4, scoring='neg_mean_squared_error', n_jobs=-1)
@@ -76,7 +80,18 @@ def optimisation_hyperparametres(features : pd.DataFrame, target : pd.Series, pr
     print(f"Neural Network - Meilleurs paramètres : {mlp_grid.best_params_}")
     print(f"Neural Network - Meilleur RMSE (train cross-val) : {-mlp_grid.best_score_:.2f}")
     
-    meilleurs_estimators_rf = rf_grid.best_params_
-    meilleurs_estimators_mlp = mlp_grid.best_params_
-    
-    return meilleurs_estimators_rf, meilleurs_estimators_mlp
+    # Prédictions avec les meilleurs modèles
+    rf_best_pipeline = rf_grid.best_estimator_  # Pipeline avec les meilleurs paramètres pour Random Forest
+    mlp_best_pipeline = mlp_grid.best_estimator_  # Pipeline avec les meilleurs paramètres pour MLP
+
+    y_pred_rf = rf_best_pipeline.predict(X_test)
+    y_pred_mlp = mlp_best_pipeline.predict(X_test)
+
+    # Créer un DataFrame contenant les valeurs réelles et les prédictions
+    predictions_df = pd.DataFrame({
+        'Valeurs Réelles': y_test.values,
+        'Prédictions RandomForest': y_pred_rf.round(2),
+        'Prédictions RéseauNeurone': y_pred_mlp.round(2)
+    })
+    path_file = os.path.join(output_path_prediction, 'data_predicted.csv')
+    predictions_df.to_csv(path_file, index=False)

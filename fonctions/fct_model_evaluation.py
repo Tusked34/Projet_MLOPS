@@ -1,79 +1,69 @@
 from fonctions.fct_model_optimization import *
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
-def visualisation_predictions(best_parameters_randomforest, best_parameters_reseau_neurone, preprocessor, X, y):
+def visualisation_predictions_from_df(predictions_df: pd.DataFrame, output_dir):
     """
-    Visualise les prédictions des meilleurs modèles (Random Forest et Réseau de Neurones) 
-    à l'aide de graphiques : parité, distribution des résidus, et courbe des tendances.
+    Visualise les prédictions des modèles à partir d'un DataFrame contenant les valeurs réelles et les prédictions.
+    Génère des graphiques de parité, distribution des résidus et courbes des tendances pour chaque modèle.
 
     Args:
-        best_parameters_randomforest (dict): Meilleurs hyperparamètres pour Random Forest.
-        best_parameters_reseau_neurone (dict): Meilleurs hyperparamètres pour le Réseau de Neurones.
-        preprocessor (ColumnTransformer): Préprocesseur pour transformer les données.
-        X (pd.DataFrame): Caractéristiques (features) du dataset.
-        y (pd.Series): Variable cible (target).
+        predictions_df (pd.DataFrame): Un DataFrame contenant :
+            - 'Valeurs Réelles' : Les valeurs réelles de la cible.
+            - 'Prédictions RandomForest' : Les prédictions du modèle Random Forest.
+            - 'Prédictions RéseauNeurone' : Les prédictions du modèle Réseau de Neurones.
 
     Returns:
-        None: Affiche les graphiques des prédictions.
+        None: Affiche les graphiques.
     """
+    
+    # Vérification des colonnes requises
+    required_columns = ['Valeurs Réelles', 'Prédictions RandomForest', 'Prédictions RéseauNeurone']
+    for col in required_columns:
+        if col not in predictions_df.columns:
+            raise ValueError(f"Le DataFrame doit contenir la colonne '{col}'.")
 
-    # Supprimer le préfixe "model__" des paramètres
-    rf_params = {key.replace('model__', ''): value for key, value in best_parameters_randomforest.items()}
-    mlp_params = {key.replace('model__', ''): value for key, value in best_parameters_reseau_neurone.items()}
-
-    # Diviser les données en train/test
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # 1. Pipeline pour Random Forest avec les meilleurs hyperparamètres
-    rf_pipeline = Pipeline(steps=[
-        ('preprocessor', preprocessor),
-        ('model', RandomForestRegressor(random_state=42, **rf_params))
-    ])
-    rf_pipeline.fit(X_train, y_train)  # Entraînement du modèle
-    y_pred_rf = rf_pipeline.predict(X_test)  # Prédictions
-
-    # 2. Pipeline pour Réseau de Neurones avec les meilleurs hyperparamètres
-    mlp_pipeline = Pipeline(steps=[
-        ('preprocessor', preprocessor),
-        ('model', MLPRegressor(random_state=42, max_iter=500, **mlp_params))
-    ])
-    mlp_pipeline.fit(X_train, y_train)  # Entraînement du modèle
-    y_pred_mlp = mlp_pipeline.predict(X_test)  # Prédictions
+    # Extraire les colonnes nécessaires
+    y_true = predictions_df['Valeurs Réelles'].round(2)
+    y_pred_rf = predictions_df['Prédictions RandomForest'].round(2)
+    y_pred_mlp = predictions_df['Prédictions RéseauNeurone'].round(2)
 
     # Visualisation pour Random Forest
     print("Visualisation des prédictions pour Random Forest")
-    _visualiser_predictions(y_test, y_pred_rf, title="Random Forest")
+    _visualiser_predictions(y_true, y_pred_rf, title="Random Forest", output_dir=output_dir)
 
     # Visualisation pour Réseau de Neurones
     print("Visualisation des prédictions pour le Réseau de Neurones")
-    _visualiser_predictions(y_test, y_pred_mlp, title="Réseau de Neurones")
+    _visualiser_predictions(y_true, y_pred_mlp, title="Réseau de Neurones", output_dir=output_dir)
 
-def _visualiser_predictions(y_test, y_pred, title):
+
+def _visualiser_predictions(y_true, y_pred, title, output_dir):
     """
     Fonction utilitaire pour générer les graphiques de parité, résidus et tendances.
 
     Args:
-        y_test (pd.Series): Valeurs réelles de la cible.
+        y_true (pd.Series): Valeurs réelles de la cible.
         y_pred (np.ndarray): Valeurs prédites par le modèle.
         title (str): Titre à afficher pour les graphiques.
 
     Returns:
         None: Affiche les graphiques.
     """
-
+    
     # 1. Graphique de parité (Réel vs Prédit)
     plt.figure(figsize=(8, 8))
-    plt.scatter(y_test, y_pred, alpha=0.7, color="blue")
-    plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--')  # Ligne y=x
+    plt.scatter(y_true, y_pred, alpha=0.7, color="blue")
+    plt.plot([min(y_true), max(y_true)], [min(y_true), max(y_true)], color='red', linestyle='--')  # Ligne y=x
     plt.title(f"Graphique de Parité : Valeurs Réelles vs Prédites ({title})")
     plt.xlabel("Valeurs Réelles")
     plt.ylabel("Valeurs Prédites")
     plt.grid(True)
+    plt.savefig(os.path.join(output_dir, f"parity_{title.replace(' ', '_')}.png"))
     plt.show()
 
     # 2. Histogramme des résidus (Erreurs)
-    residuals = y_test - y_pred
+    residuals = y_true - y_pred
     plt.figure(figsize=(8, 6))
     sns.histplot(residuals, kde=True, color="purple", bins=30)
     plt.title(f"Distribution des Résidus ({title})")
@@ -81,15 +71,17 @@ def _visualiser_predictions(y_test, y_pred, title):
     plt.ylabel("Fréquence")
     plt.axvline(0, color='red', linestyle='--')  # Ligne verticale à 0
     plt.grid(True)
+    plt.savefig(os.path.join(output_dir, f"residuals_{title.replace(' ', '_')}.png"))
     plt.show()
 
     # 3. Courbe des valeurs réelles et prédites
     plt.figure(figsize=(10, 6))
-    plt.plot(y_test.values, label="Valeurs Réelles", marker='o', linestyle='-', color="blue")
+    plt.plot(y_true.values, label="Valeurs Réelles", marker='o', linestyle='-', color="blue")
     plt.plot(y_pred, label="Valeurs Prédites", marker='x', linestyle='--', color="orange")
     plt.title(f"Comparaison des Tendances : Réel vs Prédit ({title})")
     plt.xlabel("Index")
     plt.ylabel("Prix")
     plt.legend()
     plt.grid(True)
+    plt.savefig(os.path.join(output_dir, f"trend_{title.replace(' ', '_')}.png"))
     plt.show()
