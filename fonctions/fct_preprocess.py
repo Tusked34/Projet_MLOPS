@@ -96,13 +96,24 @@ def low_modalities_grouping(df):
 
 def filter_price_range(df, column='PRICE', min_price=49000, max_price=180000000):
     """
-    Filtre directement le DataFrame passé en paramètre en supprimant les lignes où les valeurs
-    de la colonne spécifiée ne sont pas dans l'intervalle [min_price, max_price].
+    Filtre un DataFrame en supprimant les lignes où les valeurs de la colonne spécifiée ne sont pas dans l'intervalle [min_price, max_price].
 
-    :param df: DataFrame à modifier.
-    :param column: Nom de la colonne contenant les valeurs à filtrer (par défaut 'PRICE').
-    :param min_price: Valeur minimale incluse (par défaut 49000).
-    :param max_price: Valeur maximale incluse (par défaut 180000000).
+    Cette fonction filtre les lignes du DataFrame `df` en supprimant celles où les valeurs de la colonne spécifiée 
+    (par défaut 'PRICE') sont inférieures à `min_price` ou supérieures à `max_price`. Elle modifie le DataFrame en place 
+    et n'en retourne pas de copie. Un message de confirmation est imprimé après l'opération.
+
+    Args:
+        df (pandas.DataFrame): Le DataFrame à filtrer.
+        column (str, optional): Le nom de la colonne contenant les valeurs à filtrer (par défaut 'PRICE').
+        min_price (int, optional): La valeur minimale incluse dans le filtre (par défaut 49000).
+        max_price (int, optional): La valeur maximale incluse dans le filtre (par défaut 180000000).
+
+    Return:
+        None: La fonction modifie le DataFrame en place et ne retourne rien.
+
+    Prints:
+        Un message de confirmation indiquant que le filtrage a été effectué avec succès : 
+        "*** Filter Price Range OK ***".
     """
     # Appliquer le filtre directement au DataFrame
     df.drop(df[(df[column] < min_price) | (df[column] > max_price)].index, inplace=True)
