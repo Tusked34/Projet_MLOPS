@@ -41,7 +41,7 @@ def optimisation_hyperparametres(features : pd.DataFrame, target : pd.Series, pr
     print("Optimisation du RandomForest en cours ...")
     # Grille de recherche pour Random Forest
     rf_params = {
-        'model__n_estimators': [50, 100, 200],
+        'model__n_estimators': [100, 500, 1000],
         'model__max_depth': [10, 20, None]
     }
 
