@@ -72,9 +72,21 @@ def drop_useless_columns(df):
 
 def low_modalities_grouping(df):
     """ 
-    Compte les occurrences de chaque modalité dans la colonne 'TYPE'
-    identifie les modalités avec moins de 50 occurrences
-    Remplace les modalités avec moins de 50 occurrences par "Autre_Type"
+    Regroupe les modalités ayant peu d'occurrences dans la colonne 'TYPE'.
+
+    Cette fonction compte les occurrences de chaque modalité dans la colonne 'TYPE' d'un DataFrame `df`, 
+    identifie les modalités ayant moins de 50 occurrences, puis remplace ces modalités par la valeur "Autre_Type".
+    Après avoir effectué l'opération, un message de confirmation est imprimé.
+
+    Args:
+        df (pandas.DataFrame): Le DataFrame contenant la colonne 'TYPE' à traiter.
+
+    Return:
+        None: La fonction modifie le DataFrame en place et ne retourne rien.
+
+    Prints:
+        Un message de confirmation indiquant que les modalités avec peu d'occurrences ont été regroupées : 
+        "*** Low Modalities Grouping OK ***".
     """
     type_counts = df['TYPE'].value_counts()
     low_count_types = type_counts[type_counts < 50].index
