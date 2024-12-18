@@ -3,6 +3,22 @@ import pandas as pd
 
 def assign_borough(df):
     """
+    Assigne un arrondissement à chaque ligne de données dans le DataFrame.
+
+    Cette fonction prend un DataFrame `df` et assigne un arrondissement à chaque ligne en fonction de certains mots-clés 
+    présents dans plusieurs colonnes. Elle utilise la fonction interne `map_borough` pour chaque ligne, qui mappe les valeurs 
+    de la ligne (par exemple, "LOCALITY", "SUBLOCALITY", "STREET_NAME", "ADMINISTRATIVE_AREA_LEVEL_2") à un arrondissement 
+    défini dans `borough_mapping`. Si aucun mot-clé n'est trouvé, l'arrondissement "autre" est attribué.
+
+    Args:
+        df (pandas.DataFrame): Le DataFrame contenant les données à traiter. Une nouvelle colonne 'BOROUGH' sera ajoutée.
+
+    Return:
+        None: Le DataFrame est modifié en place et aucune valeur n'est retournée.
+
+    Prints:
+        Un message de confirmation indiquant que l'opération a été effectuée avec succès : 
+        "*** Grouping Borough OK ***".
     
     """
     borough_mapping = {
