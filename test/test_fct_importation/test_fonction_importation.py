@@ -39,6 +39,7 @@ class TestETLFunction(unittest.TestCase):
         """
         Teste si la fonction charge correctement plusieurs fichiers CSV.
         """
+        print("\n[TEST] Traitement des fichiers valides...")
         df = etl(self.test_folder)
         self.assertIsInstance(df, pd.DataFrame, "Le résultat doit être un DataFrame.")
         self.assertEqual(df.shape, (13, 3), "Le DataFrame doit contenir 13 lignes et 3 colonnes.")
@@ -48,6 +49,7 @@ class TestETLFunction(unittest.TestCase):
         Teste si la fonction gère correctement un dossier vide.
         """
         os.makedirs("empty_folder", exist_ok=True)
+        print("\n[TEST] Test sur un dossier vide...")
         df = etl("empty_folder")
         self.assertTrue(df.empty, "Le DataFrame doit être vide pour un dossier vide.")
         shutil.rmtree("empty_folder")
@@ -56,6 +58,7 @@ class TestETLFunction(unittest.TestCase):
         """
         Teste si la fonction lève une exception pour un chemin invalide.
         """
+        print("\n[TEST] Test sur un chemin invalide...")
         with self.assertRaises(Exception):
             etl("chemin/inexistant")
 
@@ -66,7 +69,7 @@ class TestETLFunction(unittest.TestCase):
         invalid_file = os.path.join(self.test_folder, "invalid.csv")
         with open(invalid_file, "w") as f:
             f.write("col1,col2\n1,2,3\n4,5")  # Fichier mal formaté
-
+        print("\n[TEST] Test sur un fichier mal formaté...")
         with self.assertRaises(Exception):
             etl(self.test_folder)
 

@@ -8,8 +8,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 
 from fonctions.fct_preprocess import *
 
-import os
-
 class TestDataFrameProcessing(unittest.TestCase):
 
     @classmethod
@@ -57,6 +55,7 @@ class TestDataFrameProcessing(unittest.TestCase):
 
     def test_valid_file_processing(self):
         """Test du pipeline de traitement sur un fichier valide."""
+        print("\n[TEST] Exécution du traitement sur un fichier VALIDE.")
         df = pd.read_csv(self.valid_file)
 
         # Test assign_borough
@@ -88,6 +87,7 @@ class TestDataFrameProcessing(unittest.TestCase):
 
     def test_invalid_file_processing(self):
         """Test des erreurs sur un fichier invalide."""
+        print("\n[TEST] Exécution du traitement sur un fichier INVALIDE.")
         df = pd.read_csv(self.invalid_file)
 
         with self.assertRaises(KeyError):
@@ -99,7 +99,5 @@ class TestDataFrameProcessing(unittest.TestCase):
         with self.assertRaises(KeyError):
             filter_price_range(df)  # Colonne 'PRICE' absente.
 
-
 if __name__ == "__main__":
     unittest.main()
-
