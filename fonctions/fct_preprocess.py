@@ -123,8 +123,20 @@ def round_and_convert_to_int(df, columns):
     """
     Arrondit les valeurs des colonnes spécifiées à l'unité et les convertit en entier.
 
-    :param df: DataFrame à modifier.
-    :param columns: Liste des colonnes à traiter.
+    Cette fonction arrondit les valeurs dans les colonnes spécifiées de `df` à l'unité la plus proche 
+    et les convertit en entier. Le DataFrame est modifié en place et aucune copie n'est retournée. 
+    Un message de confirmation est imprimé après l'opération.
+
+    Args:
+        df (pandas.DataFrame): Le DataFrame à modifier.
+        columns (list of str): Liste des noms des colonnes à traiter.
+
+    Return:
+        None: La fonction modifie le DataFrame en place et ne retourne rien.
+
+    Prints:
+        Un message de confirmation indiquant que l'opération a été effectuée avec succès : 
+        "*** Round and Convert to Integer OK ***".
     """
     for column in columns:
         # Arrondir les valeurs et les convertir en int
