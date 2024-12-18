@@ -63,7 +63,3 @@ def etl(path_folder_files : str) -> pd.DataFrame:
     print("*"*50)
     print(f"Dimension du dataset : {full_data.shape[0]} lignes et {full_data.shape[1]} colonnes")
     return full_data
-
-
-
-
