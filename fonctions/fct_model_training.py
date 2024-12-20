@@ -56,7 +56,23 @@ def data_split(df : pd.DataFrame):
     return X, y, numeric_features, categorical_features
 
 def preprocess_data(features : pd.DataFrame, target : pd.Series, numeric_features : list, categorical_features : list):
+    """
+    Prépare un préprocesseur pour transformer les données d'entrée (features) en normalisant les 
+    colonnes numériques et en appliquant un encodage One-Hot sur les colonnes catégoriques.
+
+    Args:
+        features (pd.DataFrame): DataFrame contenant les caractéristiques (features) à transformer.
+        target (pd.Series): Séries contenant les valeurs cibles, non utilisées dans cette fonction, mais nécessaires pour maintenir la signature.
+        numeric_features (list): Liste des colonnes numériques à standardiser.
+        categorical_features (list): Liste des colonnes catégoriques à encoder avec OneHotEncoder.
+
+    Returns:
+        preprocessor (ColumnTransformer): Un objet ColumnTransformer configuré pour transformer 
+                                          les colonnes numériques et catégoriques comme spécifié.
     
+    Prints:
+        Affiche un message indiquant la construction du préprocesseur, puis l'objet préprocesseur construit.
+    """
     print("Construction d'un preprocessor pour transformer les données :\n")
     # Construire un transformer pour traiter les colonnes
     preprocessor = ColumnTransformer(
